@@ -9,7 +9,10 @@ function parsePrice(str) {
 function formatPrice(value) {
   if (!value) return value;
   // Normalize dot-decimal (e.g. IKEA "1249.00") to comma format
-  return String(value).replace(/^(\d+)\.(\d+)$/, '$1,$2');
+  let formatted = String(value).replace(/^(\d+)\.(\d+)$/, '$1,$2');
+  // If integer without decimals (e.g. "25"), add ",00"
+  if (/^\d+$/.test(formatted)) formatted += ',00';
+  return formatted;
 }
 
 function renderWidget(prices) {

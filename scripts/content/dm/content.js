@@ -36,7 +36,7 @@ async function refreshPrice() {
 
   const prices = [
     { label: `${FLAGS[LOCAL_COUNTRY]} ${LOCAL_COUNTRY.toUpperCase()}`, value: localPrice, isLocal: true, url: window.location.href },
-    { label: `${FLAGS[OTHER_COUNTRY]} ${OTHER_COUNTRY.toUpperCase()}`, value: otherPrice, url: window.location.href.replace(`dm.${LOCAL_COUNTRY}`, `dm.${OTHER_COUNTRY}`) },
+    { label: `${FLAGS[OTHER_COUNTRY]} ${OTHER_COUNTRY.toUpperCase()}`, value: otherPrice, isLocal: false, url: window.location.href.replace(`dm.${LOCAL_COUNTRY}`, `dm.${OTHER_COUNTRY}`) },
   ];
 
   const widget = renderWidget(prices);
