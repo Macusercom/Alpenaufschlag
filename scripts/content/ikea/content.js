@@ -62,7 +62,7 @@ async function refreshPrice() {
 
   const prices = [
     { label: localRegion.label, value: localPrice, isLocal: true, url: href },
-    ...otherRegions.map(([, r], i) => ({ label: r.label, value: otherPrices[i], url: href.replace(localRegion.path, r.path) })),
+    ...otherRegions.map(([, r], i) => ({ label: r.label, value: otherPrices[i], isLocal: false, url: href.replace(localRegion.path, r.path) })),
   ];
 
   const widget = renderWidget(prices);
@@ -74,5 +74,3 @@ chrome.runtime.onMessage.addListener((request) => {
     setTimeout(refreshPrice, 1000);
   }
 });
-
-setTimeout(refreshPrice, 1000);

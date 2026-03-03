@@ -48,5 +48,3 @@ chrome.runtime.onMessage.addListener((request) => {
     setTimeout(refreshPrice, 1000);
   }
 });
-
-setTimeout(refreshPrice, 1000);

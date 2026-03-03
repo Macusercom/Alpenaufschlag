@@ -6,8 +6,7 @@ function getPriceElement() {
   return document.querySelector('[data-purpose="product.price.current"]') ?? null;
 }
 
-function getLocalPrice() {
-  const el = getPriceElement();
+function getLocalPrice(el) {
   if (!el) return null;
   const match = /(\d{1,3}(?:\.\d{3})*(?:,\d+)?)/.exec(el.textContent);
   return match ? match[1] : null;
@@ -33,7 +32,7 @@ async function refreshPrice() {
   const priceElement = getPriceElement();
   if (!priceElement) return;
 
-  const localPrice = getLocalPrice();
+  const localPrice = getLocalPrice(priceElement);
   if (!localPrice) return;
 
   const productCode = getProductCode();
@@ -58,5 +57,3 @@ chrome.runtime.onMessage.addListener((request) => {
     setTimeout(refreshPrice, 1000);
   }
 });
-
-setTimeout(refreshPrice, 1000);

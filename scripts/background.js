@@ -54,7 +54,7 @@ chrome.runtime.onMessage.addListener((request, _, sendResponse) => {
   }
 });
 
-chrome.tabs.onUpdated.addListener((tabId, changeInfo, _) => {
+chrome.tabs.onUpdated.addListener((tabId, changeInfo) => {
   if (changeInfo.status === "complete") {
     chrome.tabs
       .sendMessage(tabId, { message: 'refreshPrice', })
