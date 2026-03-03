@@ -36,6 +36,8 @@ async function fetchOtherPrice() {
 }
 
 async function refreshPrice() {
+  if (window.location.pathname.startsWith('/search')) return;
+
   const priceElement = getPriceElement();
   if (!priceElement) return;
 
