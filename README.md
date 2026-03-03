@@ -27,4 +27,4 @@ The folder must remain, once it is deleted, the extension will not work anymore.
 ## Credits
 Original project made by gomadoge (https://github.com/gomadoge/price-checker-extension)
 
-Project was made using Claude AI. Icon created by ChatGPT.
+Project was made with the help of Claude AI. Icon created by ChatGPT.
