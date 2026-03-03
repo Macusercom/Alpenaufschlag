@@ -1,7 +1,9 @@
 const REGIONS = {
-  at: { label: '🇦🇹 AT', path: '/at/de/' },
-  de: { label: '🇩🇪 DE', path: '/de/de/' },
-  sk: { label: '🇸🇰 SK', path: '/sk/sk/' },
+  at: { label: '🇦🇹 AT', path: '/at/de/', currency: 'EUR' },
+  de: { label: '🇩🇪 DE', path: '/de/de/', currency: 'EUR' },
+  sk: { label: '🇸🇰 SK', path: '/sk/sk/', currency: 'EUR' },
+  cz: { label: '🇨🇿 CZ', path: '/cz/cs/', currency: 'CZK' },
+  hu: { label: '🇭🇺 HU', path: '/hu/hu/', currency: 'HUF' },
 };
 
 const LOCAL_REGION_KEY = Object.keys(REGIONS).find(k => window.location.href.includes(REGIONS[k].path)) ?? null;
@@ -43,6 +45,14 @@ async function fetchPrice(url) {
   }
 }
 
+async function getExchangeRates() {
+  try {
+    return await new Promise(resolve =>
+      chrome.runtime.sendMessage({ exchangeRates: true }, r => resolve(r ?? null))
+    );
+  } catch { return null; }
+}
+
 async function refreshPrice() {
   if (!LOCAL_REGION_KEY) return;
 
@@ -54,15 +64,33 @@ async function refreshPrice() {
   const href = window.location.href;
 
   const localPrice = getLocalPrice();
+  if (!localPrice) return;
+
   const otherPrices = await Promise.all(
     otherRegions.map(([, r]) => fetchPrice(href.replace(localRegion.path, r.path)))
   );
 
-  if (!localPrice) return;
+  const needsRates = [localRegion, ...otherRegions.map(([, r]) => r)].some(r => r.currency !== 'EUR');
+  const rates = needsRates ? await getExchangeRates() : null;
+
+  function toEur(priceStr, currency) {
+    if (!priceStr) return { value: null, approx: false };
+    if (currency === 'EUR') return { value: priceStr, approx: false };
+    const rate = rates?.rates?.[currency];
+    if (!rate) return { value: null, approx: false };
+    const eur = parseFloat(String(priceStr).replace(',', '.')) / rate;
+    return { value: eur.toFixed(2), approx: true };
+  }
+
+  const localConverted = toEur(localPrice, localRegion.currency);
+  if (!localConverted.value) return;
 
   const prices = [
-    { label: localRegion.label, value: localPrice, isLocal: true, url: href },
-    ...otherRegions.map(([, r], i) => ({ label: r.label, value: otherPrices[i], isLocal: false, url: href.replace(localRegion.path, r.path) })),
+    { label: localRegion.label, value: localConverted.value, approx: localConverted.approx, isLocal: true, url: href },
+    ...otherRegions.map(([, r], i) => {
+      const { value, approx } = toEur(otherPrices[i], r.currency);
+      return { label: r.label, value, approx, isLocal: false, url: href.replace(localRegion.path, r.path) };
+    }),
   ];
 
   const widget = renderWidget(prices);

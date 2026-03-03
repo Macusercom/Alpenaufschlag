@@ -1,7 +1,12 @@
 <img src="icons/icon128.png" alt="icon" height="100">
 
 # Alpenaufschlag: A price checker for Google Chrome
-A simple chrome extension to compare web shop prices between Austria and Germany, currently supporting DM, IKEA and XXXLutz.
+A simple chrome extension to compare web shop prices between Austria and Germany.
+
+* DM
+* IKEA
+* XXXLutz
+* Müller
 
 ## How To Install (Chrome)
 

@@ -9,9 +9,7 @@ function parsePrice(str) {
 function formatPrice(value) {
   if (!value) return value;
   // Normalize dot-decimal (e.g. IKEA "1249.00") to comma format
-  let s = String(value).replace(/^(\d+)\.(\d+)$/, '$1,$2');
-  // Strip trailing ",00"
-  return s.replace(/,00$/, '');
+  return String(value).replace(/^(\d+)\.(\d+)$/, '$1,$2');
 }
 
 function renderWidget(prices) {
@@ -28,7 +26,7 @@ function renderWidget(prices) {
     'font-size:13px;',
   ].join('');
 
-  for (const { label, value, isLocal, url } of prices) {
+  for (const { label, value, approx, isLocal, url } of prices) {
     const numVal = parsePrice(value);
     const isCheapest = minPrice !== null && numVal === minPrice;
 
@@ -44,7 +42,7 @@ function renderWidget(prices) {
       `color:${isCheapest ? '#15803d' : '#374151'};`,
       `font-weight:${isLocal ? '600' : '400'};`,
     ].join('');
-    chip.textContent = `${label} ${numVal !== null ? `€\u202F${formatPrice(value)}` : '—'}`;
+    chip.textContent = `${label} ${numVal !== null ? `${approx ? '~\u202F' : ''}€\u202F${formatPrice(value)}` : '—'}`;
     widget.appendChild(chip);
   }
 

@@ -1,4 +1,36 @@
+const RATES_CACHE_KEY = 'exchangeRatesCache';
+const RATES_TTL_MS = 24 * 60 * 60 * 1000;
+
 chrome.runtime.onMessage.addListener((request, _, sendResponse) => {
+  if (request.exchangeRates) {
+    chrome.storage.local.get(RATES_CACHE_KEY, async (stored) => {
+      const cached = stored[RATES_CACHE_KEY];
+      if (cached && Date.now() - cached.ts < RATES_TTL_MS) {
+        return sendResponse(cached.data);
+      }
+      try {
+        const r = await fetch('https://open.er-api.com/v6/latest/EUR');
+        const data = r.ok ? await r.json() : null;
+        if (data?.rates) {
+          chrome.storage.local.set({ [RATES_CACHE_KEY]: { ts: Date.now(), data } });
+          return sendResponse(data);
+        }
+        throw new Error();
+      } catch {
+        try {
+          const r2 = await fetch('https://api.frankfurter.app/latest?from=EUR');
+          const data2 = r2.ok ? await r2.json() : null;
+          if (data2?.rates) {
+            chrome.storage.local.set({ [RATES_CACHE_KEY]: { ts: Date.now(), data: data2 } });
+            return sendResponse(data2);
+          }
+        } catch {}
+        sendResponse(null);
+      }
+    });
+    return true;
+  }
+
   if (request.gtin && request.country) {
     const url = `https://products.dm.de/product/${request.country}/products/gtins/${request.gtin}`
 
