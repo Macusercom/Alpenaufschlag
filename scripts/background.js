@@ -17,11 +17,38 @@ chrome.runtime.onMessage.addListener((request, _, sendResponse) => {
       .catch(_ => sendResponse({ found: false }));
 
     return true;
-  } else if (request.url) {
+  }
+
+  if (request.xxxlutzCode && request.country) {
+    const url = `https://www.xxxlutz.${request.country}/api/graphql`;
+    const query = `query product($productCode: String!) {
+      getProduct(productCode: $productCode) {
+        priceData { currentPrice { value } }
+      }
+    }`;
+    fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify({ operationName: 'product', query, variables: { productCode: request.xxxlutzCode } })
+    })
+      .then(resp => resp.ok ? resp.json() : Promise.reject(resp.status))
+      .then(json => {
+        const value = json?.data?.getProduct?.priceData?.currentPrice?.value;
+        if (value != null) {
+          sendResponse({ found: true, price: parseFloat(value).toFixed(2).replace('.', ',') });
+        } else {
+          sendResponse({ found: false });
+        }
+      })
+      .catch(_ => sendResponse({ found: false }));
+    return true;
+  }
+
+  if (request.url) {
     fetch(request.url)
       .then(response => response.ok ? response.text() : Promise.reject())
       .then(text => sendResponse({ found: true, text }))
-      .catch(_ => sendResponse({ found: false }))
+      .catch(_ => sendResponse({ found: false }));
 
     return true;
   }

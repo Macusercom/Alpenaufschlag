@@ -1,11 +1,17 @@
 function parsePrice(str) {
   if (!str) return null;
-  const n = parseFloat(String(str).replace(',', '.'));
+  const s = String(str);
+  const normalized = s.includes(',') ? s.replace(/\./g, '').replace(',', '.') : s;
+  const n = parseFloat(normalized);
   return isNaN(n) ? null : n;
 }
 
 function formatPrice(value) {
-  return String(value).replace('.', ',');
+  if (!value) return value;
+  // Normalize dot-decimal (e.g. IKEA "1249.00") to comma format
+  let s = String(value).replace(/^(\d+)\.(\d+)$/, '$1,$2');
+  // Strip trailing ",00"
+  return s.replace(/,00$/, '');
 }
 
 function renderWidget(prices) {
@@ -24,7 +30,7 @@ function renderWidget(prices) {
 
   for (const { label, value, isLocal, url } of prices) {
     const numVal = parsePrice(value);
-    const isCheapest = minPrice !== null && numVal === minPrice && numericValues.length > 1;
+    const isCheapest = minPrice !== null && numVal === minPrice;
 
     const chip = document.createElement('a');
     chip.href = url;

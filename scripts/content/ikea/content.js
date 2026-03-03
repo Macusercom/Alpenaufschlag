@@ -11,28 +11,23 @@ function getPriceElement() {
 }
 
 function getLocalPrice() {
-  // Prefer the screen reader text which contains the full formatted price, e.g. "Preis € 59,99".
-  const srText = document.querySelector('.pipcom-price__sr-text');
-  if (srText) {
-    const match = /\d+(?:[,.]\d+)?/.exec(srText.textContent);
-    if (match) return match[0];
-  }
-  // Fallback: combine integer and decimal spans directly.
-  const integer = document.querySelector('.pipcom-price__integer');
-  const decimal = document.querySelector('.pipcom-price__decimal');
-  if (integer) {
-    const dec = decimal?.textContent.trim();
-    return integer.textContent.trim() + (dec ? ',' + dec : '');
+  const ldScript = document.querySelector('#pip-range-json-ld');
+  if (ldScript) {
+    try {
+      const price = JSON.parse(ldScript.textContent)?.offers?.price;
+      if (price != null) return String(price);
+    } catch {}
   }
   return null;
 }
 
 function extractPriceFromText(text) {
-  // The screen reader span in the fetched HTML contains the full price, e.g. "Preis € 59,99".
-  const srMatch = /pipcom-price__sr-text[^>]*>([^<]+)</.exec(text);
-  if (srMatch) {
-    const priceMatch = /\d+(?:[,.]\d+)?/.exec(srMatch[1]);
-    if (priceMatch) return priceMatch[0];
+  const ldMatch = /id="pip-range-json-ld"[^>]*>([\s\S]*?)<\/script>/.exec(text);
+  if (ldMatch) {
+    try {
+      const price = JSON.parse(ldMatch[1])?.offers?.price;
+      if (price != null) return String(price);
+    } catch {}
   }
   return null;
 }

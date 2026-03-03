@@ -3,18 +3,25 @@ const OTHER_COUNTRY = LOCAL_COUNTRY === 'at' ? 'de' : 'at';
 const FLAGS = { at: '🇦🇹', de: '🇩🇪' };
 
 function getPriceElement() {
-  return document.querySelector('[data-dmid="price-localized"]') ?? null;
+  return document.querySelector('[data-purpose="product.price.current"]') ?? null;
 }
 
-function getGtin() {
-  const match = document.location.href.match(/-p(\d+)\.html/);
+function getLocalPrice() {
+  const el = getPriceElement();
+  if (!el) return null;
+  const match = /(\d{1,3}(?:\.\d{3})*(?:,\d+)?)/.exec(el.textContent);
   return match ? match[1] : null;
 }
 
-async function fetchPrice(gtin, country) {
+function getProductCode() {
+  const match = /(\d{10,})$/.exec(window.location.pathname);
+  return match ? match[1] : null;
+}
+
+async function fetchPrice(productCode, country) {
   try {
     const response = await new Promise(resolve =>
-      chrome.runtime.sendMessage({ gtin, country }, resolve)
+      chrome.runtime.sendMessage({ xxxlutzCode: productCode, country }, resolve)
     );
     return response?.found ? response.price : null;
   } catch {
@@ -26,17 +33,20 @@ async function refreshPrice() {
   const priceElement = getPriceElement();
   if (!priceElement) return;
 
-  const gtin = getGtin();
-  if (!gtin) return;
+  const localPrice = getLocalPrice();
+  if (!localPrice) return;
 
-  const localPriceMatch = /\d{1,3}(?:\.\d{3})*(?:,\d+)?/.exec(priceElement.innerText);
-  if (!localPriceMatch) return;
-  const localPrice = localPriceMatch[0];
-  const otherPrice = await fetchPrice(gtin, OTHER_COUNTRY);
+  const productCode = getProductCode();
+  if (!productCode) return;
+
+  const otherUrl = window.location.href.replace(
+    `xxxlutz.${LOCAL_COUNTRY}`, `xxxlutz.${OTHER_COUNTRY}`
+  );
+  const otherPrice = await fetchPrice(productCode, OTHER_COUNTRY);
 
   const prices = [
     { label: `${FLAGS[LOCAL_COUNTRY]} ${LOCAL_COUNTRY.toUpperCase()}`, value: localPrice, isLocal: true, url: window.location.href },
-    { label: `${FLAGS[OTHER_COUNTRY]} ${OTHER_COUNTRY.toUpperCase()}`, value: otherPrice, url: window.location.href.replace(`dm.${LOCAL_COUNTRY}`, `dm.${OTHER_COUNTRY}`) },
+    { label: `${FLAGS[OTHER_COUNTRY]} ${OTHER_COUNTRY.toUpperCase()}`, value: otherPrice, url: otherUrl },
   ];
 
   const widget = renderWidget(prices);
