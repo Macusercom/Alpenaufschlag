@@ -15,6 +15,39 @@ function formatPrice(value) {
   return formatted;
 }
 
+function renderLoadingWidget(count) {
+  document.getElementById('price-checker-widget')?.remove();
+
+  if (!document.getElementById('price-checker-shimmer-style')) {
+    const style = document.createElement('style');
+    style.id = 'price-checker-shimmer-style';
+    style.textContent = '@keyframes pcs{0%,100%{opacity:.4}50%{opacity:.9}}';
+    document.head.appendChild(style);
+  }
+
+  const widget = document.createElement('div');
+  widget.id = 'price-checker-widget';
+  widget.style.cssText = [
+    'display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;',
+    'font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;',
+    'font-size:13px;',
+  ].join('');
+
+  for (let i = 0; i < count; i++) {
+    const chip = document.createElement('div');
+    chip.style.cssText = [
+      'display:inline-flex;align-items:center;padding:3px 8px;border-radius:12px;',
+      'border:1px solid #d1d5db;background:#f3f4f6;',
+      'width:70px;height:22px;',
+      'animation:pcs 1.5s ease-in-out infinite;',
+      `animation-delay:${i * 0.15}s;`,
+    ].join('');
+    widget.appendChild(chip);
+  }
+
+  return widget;
+}
+
 function renderWidget(prices) {
   document.getElementById('price-checker-widget')?.remove();
 

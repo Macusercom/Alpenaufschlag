@@ -66,6 +66,8 @@ async function refreshPrice() {
   const localPrice = getLocalPrice();
   if (!localPrice) return;
 
+  priceElement.parentNode.insertBefore(renderLoadingWidget(5), priceElement.nextSibling);
+
   const otherPrices = await Promise.all(
     otherRegions.map(([, r]) => fetchPrice(href.replace(localRegion.path, r.path)))
   );
@@ -99,6 +101,8 @@ async function refreshPrice() {
 
 chrome.runtime.onMessage.addListener((request) => {
   if (request.message === 'refreshPrice') {
+    const el = getPriceElement();
+    if (el) el.parentNode.insertBefore(renderLoadingWidget(5), el.nextSibling);
     setTimeout(refreshPrice, 1000);
   }
 });

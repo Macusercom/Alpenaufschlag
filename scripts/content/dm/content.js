@@ -32,6 +32,7 @@ async function refreshPrice() {
   const localPriceMatch = /\d{1,3}(?:\.\d{3})*(?:,\d+)?/.exec(priceElement.innerText);
   if (!localPriceMatch) return;
   const localPrice = localPriceMatch[0];
+  priceElement.parentNode.insertBefore(renderLoadingWidget(2), priceElement.nextSibling);
   const otherPrice = await fetchPrice(gtin, OTHER_COUNTRY);
 
   const prices = [
@@ -45,6 +46,8 @@ async function refreshPrice() {
 
 chrome.runtime.onMessage.addListener((request) => {
   if (request.message === 'refreshPrice') {
+    const el = getPriceElement();
+    if (el) el.parentNode.insertBefore(renderLoadingWidget(2), el.nextSibling);
     setTimeout(refreshPrice, 1000);
   }
 });

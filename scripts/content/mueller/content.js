@@ -44,6 +44,10 @@ async function refreshPrice() {
   const localPrice = getLocalPrice();
   if (!localPrice) return;
 
+  const loadingWidget = renderLoadingWidget(2);
+  loadingWidget.style.justifyContent = 'flex-end';
+  priceElement.parentNode.insertBefore(loadingWidget, priceElement.nextSibling);
+
   const { price: otherPrice, url: otherUrl } = await fetchOtherPrice();
 
   const prices = [
@@ -58,6 +62,12 @@ async function refreshPrice() {
 
 chrome.runtime.onMessage.addListener((request) => {
   if (request.message === 'refreshPrice') {
+    const el = getPriceElement();
+    if (el) {
+      const w = renderLoadingWidget(2);
+      w.style.justifyContent = 'flex-end';
+      el.parentNode.insertBefore(w, el.nextSibling);
+    }
     setTimeout(refreshPrice, 1000);
   }
 });

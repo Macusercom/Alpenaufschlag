@@ -38,6 +38,8 @@ async function refreshPrice() {
   const productCode = getProductCode();
   if (!productCode) return;
 
+  priceElement.parentNode.insertBefore(renderLoadingWidget(2), priceElement.nextSibling);
+
   const otherUrl = window.location.href.replace(
     `xxxlutz.${LOCAL_COUNTRY}`, `xxxlutz.${OTHER_COUNTRY}`
   );
@@ -54,6 +56,8 @@ async function refreshPrice() {
 
 chrome.runtime.onMessage.addListener((request) => {
   if (request.message === 'refreshPrice') {
+    const el = getPriceElement();
+    if (el) el.parentNode.insertBefore(renderLoadingWidget(2), el.nextSibling);
     setTimeout(refreshPrice, 1000);
   }
 });
