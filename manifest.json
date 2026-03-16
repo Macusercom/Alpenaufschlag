@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Alpenaufschlag",
-  "version": "1.4",
+  "version": "1.5",
   "description": "Compare prices from web shops between Austria, Germany and Slovakia.",
   "icons": {
     "16": "icons/icon16.png",
@@ -30,6 +30,10 @@
     {
       "js": ["scripts/content/shared.js", "scripts/content/mueller/content.js"],
       "matches": ["https://www.mueller.at/*", "https://www.mueller.de/*"]
+    },
+    {
+      "js": ["scripts/content/shared.js", "scripts/content/thalia/content.js"],
+      "matches": ["https://www.thalia.at/*", "https://www.thalia.de/*"]
     }
   ],
   "permissions": ["storage"],
@@ -46,6 +50,8 @@
     "https://www.xxxlutz.at/*",
     "https://www.xxxlutz.de/*",
     "https://www.mueller.at/*",
-    "https://www.mueller.de/*"
+    "https://www.mueller.de/*",
+    "https://www.thalia.at/*",
+    "https://www.thalia.de/*"
   ]
 }
