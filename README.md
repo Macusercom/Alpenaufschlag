@@ -7,6 +7,7 @@ A simple chrome extension to compare web shop prices primarily between Austria a
 * XXXLutz (AT, DE)
 * Müller (AT, DE)
 * IKEA (AT, DE, SK, HU, CZ)
+* Thalia (AT, DE)
 
 ## How To Install (Chrome)
 
