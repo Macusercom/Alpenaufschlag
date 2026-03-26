@@ -11,8 +11,9 @@ function getLocalPrice() {
   for (const script of document.querySelectorAll('script[type="application/ld+json"]')) {
     try {
       const data = JSON.parse(script.textContent);
-      if (data['@type'] === 'Product' && data.offers?.[0]?.price != null)
-        return parseFloat(data.offers[0].price).toFixed(2);
+      const product = data['@type'] === 'ProductGroup' ? data.hasVariant?.[0] : data;
+      if (product?.['@type'] === 'Product' && product.offers?.[0]?.price != null)
+        return parseFloat(product.offers[0].price).toFixed(2);
     } catch {}
   }
   return null;
@@ -40,9 +41,10 @@ function insertWidget(priceElement, widget) {
 
 async function fetchOtherPrice(otherUrl) {
   try {
-    const response = await new Promise(resolve =>
-      chrome.runtime.sendMessage({ url: otherUrl }, resolve)
-    );
+    const response = await Promise.race([
+      new Promise(resolve => chrome.runtime.sendMessage({ url: otherUrl }, resolve)),
+      new Promise(resolve => setTimeout(() => resolve(null), 8000)),
+    ]);
     return response?.found ? extractPriceFromText(response.text) : null;
   } catch {
     return null;
