@@ -8,7 +8,8 @@ A simple chrome extension to compare web shop prices primarily between Austria a
 * Müller (AT, DE)
 * IKEA (AT, DE, SK, HU, CZ)
 * Thalia (AT, DE)
-* Obi (AT, DE)
+* OBI (AT, DE)
+* Hornbach (AT, DE)
 
 ## How To Install (Chrome)
 

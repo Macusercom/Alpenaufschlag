@@ -28,7 +28,7 @@ function renderLoadingWidget(count) {
   const widget = document.createElement('div');
   widget.id = 'price-checker-widget';
   widget.style.cssText = [
-    'display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;',
+    'display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;margin-bottom:12px;',
     'font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;',
     'font-size:13px;',
   ].join('');
@@ -57,7 +57,7 @@ function renderWidget(prices) {
   const widget = document.createElement('div');
   widget.id = 'price-checker-widget';
   widget.style.cssText = [
-    'display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;',
+    'display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;margin-bottom:12px;',
     'font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;',
     'font-size:13px;',
   ].join('');

@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Alpenaufschlag",
-  "version": "1.5",
+  "version": "1.6",
   "description": "Compare prices from web shops between Austria, Germany and Slovakia.",
   "icons": {
     "16": "icons/icon16.png",
@@ -38,6 +38,10 @@
     {
       "js": ["scripts/content/shared.js", "scripts/content/obi/content.js"],
       "matches": ["https://www.obi.at/*", "https://www.obi.de/*"]
+    },
+    {
+      "js": ["scripts/content/shared.js", "scripts/content/hornbach/content.js"],
+      "matches": ["https://www.hornbach.at/*", "https://www.hornbach.de/*"]
     }
   ],
   "permissions": ["storage"],
@@ -58,6 +62,8 @@
     "https://www.thalia.at/*",
     "https://www.thalia.de/*",
     "https://www.obi.at/*",
-    "https://www.obi.de/*"
+    "https://www.obi.de/*",
+    "https://www.hornbach.at/*",
+    "https://www.hornbach.de/*"
   ]
 }
