@@ -34,6 +34,10 @@
     {
       "js": ["scripts/content/shared.js", "scripts/content/thalia/content.js"],
       "matches": ["https://www.thalia.at/*", "https://www.thalia.de/*"]
+    },
+    {
+      "js": ["scripts/content/shared.js", "scripts/content/obi/content.js"],
+      "matches": ["https://www.obi.at/*", "https://www.obi.de/*"]
     }
   ],
   "permissions": ["storage"],
@@ -52,6 +56,8 @@
     "https://www.mueller.at/*",
     "https://www.mueller.de/*",
     "https://www.thalia.at/*",
-    "https://www.thalia.de/*"
+    "https://www.thalia.de/*",
+    "https://www.obi.at/*",
+    "https://www.obi.de/*"
   ]
 }
