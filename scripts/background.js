@@ -32,16 +32,15 @@ chrome.runtime.onMessage.addListener((request, _, sendResponse) => {
   }
 
   if (request.gtin && request.country) {
-    const url = `https://products.dm.de/product/${request.country}/products/gtins/${request.gtin}`
+    const url = `https://products.dm.de/product/products/detail/${request.country.toUpperCase()}/gtin/${request.gtin}`;
 
     fetch(url)
       .then(response => response.ok ? response.json() : Promise.reject())
       .then(json => {
-        if (json?.length > 0) {
-          const raw = json[0].price;
-          const n = parseFloat(String(raw).replace(',', '.'));
-          const price = !isNaN(n) ? n.toFixed(2).replace('.', ',') : String(raw);
-          sendResponse({ found: true, price });
+        const raw = json?.metadata?.price;
+        const n = parseFloat(raw);
+        if (!isNaN(n)) {
+          sendResponse({ found: true, price: n.toFixed(2).replace('.', ',') });
         } else {
           sendResponse({ found: false });
         }
