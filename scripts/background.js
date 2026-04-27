@@ -31,8 +31,8 @@ chrome.runtime.onMessage.addListener((request, _, sendResponse) => {
     return true;
   }
 
-  if (request.gtin && request.country) {
-    const url = `https://products.dm.de/product/products/detail/${request.country.toUpperCase()}/gtin/${request.gtin}`;
+  if (request.dan && request.country) {
+    const url = `https://products.dm.de/product/products/detail/${request.country.toUpperCase()}/dan/${request.dan}`;
 
     fetch(url)
       .then(response => response.ok ? response.json() : Promise.reject())

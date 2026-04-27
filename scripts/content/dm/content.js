@@ -6,15 +6,15 @@ function getPriceElement() {
   return document.querySelector('[data-dmid="price-localized"]') ?? null;
 }
 
-function getGtin() {
-  const match = document.location.href.match(/-p(\d+)\.html/);
+function getDan() {
+  const match = document.location.pathname.match(/^\/p\/d\/(\d+)\//);
   return match ? match[1] : null;
 }
 
-async function fetchPrice(gtin, country) {
+async function fetchPrice(dan, country) {
   try {
     const response = await new Promise(resolve =>
-      chrome.runtime.sendMessage({ gtin, country }, resolve)
+      chrome.runtime.sendMessage({ dan, country }, resolve)
     );
     return response?.found ? response.price : null;
   } catch {
@@ -26,14 +26,14 @@ async function refreshPrice() {
   const priceElement = getPriceElement();
   if (!priceElement) return;
 
-  const gtin = getGtin();
-  if (!gtin) return;
+  const dan = getDan();
+  if (!dan) return;
 
   const localPriceMatch = /\d{1,3}(?:\.\d{3})*(?:,\d+)?/.exec(priceElement.innerText);
   if (!localPriceMatch) return;
   const localPrice = localPriceMatch[0];
   priceElement.parentNode.insertBefore(renderLoadingWidget(2), priceElement.nextSibling);
-  const otherPrice = await fetchPrice(gtin, OTHER_COUNTRY);
+  const otherPrice = await fetchPrice(dan, OTHER_COUNTRY);
 
   const prices = [
     { label: `${FLAGS[LOCAL_COUNTRY]} ${LOCAL_COUNTRY.toUpperCase()}`, value: localPrice, isLocal: true, url: window.location.href },
