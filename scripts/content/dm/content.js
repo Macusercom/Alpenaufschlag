@@ -46,6 +46,7 @@ async function refreshPrice() {
 
 chrome.runtime.onMessage.addListener((request) => {
   if (request.message === 'refreshPrice') {
+    if (!getDan()) return;
     const el = getPriceElement();
     if (el) el.parentNode.insertBefore(renderLoadingWidget(2), el.nextSibling);
     setTimeout(refreshPrice, 1000);
